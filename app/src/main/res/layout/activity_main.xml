@@ -10,97 +10,261 @@
     android:layout_gravity="center_vertical"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:id="@+id/MainLinearLayout"
+    <ScrollView
+        android:id="@+id/sv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/CardViewBT"
+        <LinearLayout
+            android:id="@+id/MainLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_margin="5dp"
-            app:cardBackgroundColor="@color/bluetooth_bg_color"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="5dp"
-            app:cardMaxElevation="5dp"
-            app:cardPreventCornerOverlap="true"
-            app:cardUseCompatPadding="true"
-            app:contentPadding="0dp">
+            android:layout_height="wrap_content"
+            android:drawingCacheQuality="high"
+            android:orientation="vertical">
 
-            <RelativeLayout
+            <androidx.cardview.widget.CardView
+                android:id="@+id/CardViewBT"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="5dp">
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="@color/bluetooth_bg_color"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp"
+                app:cardMaxElevation="5dp"
+                app:cardPreventCornerOverlap="true"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="0dp">
 
-                <TextView
-                    android:id="@+id/btName"
-                    android:layout_width="233dp"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:drawablePadding="10dp"
-                    android:text="@string/unknown_bluetooth"
-                    android:textColor="@color/cornsilk"
-                    android:textSize="20sp"
-                    app:drawableStartCompat="@drawable/indicator_led_g"
-                    tools:ignore="TextContrastCheck" />
+                    android:padding="5dp">
 
-                <Button
-                    android:id="@+id/moreBtn"
-                    android:layout_width="100dp"
+                    <TextView
+                        android:id="@+id/btName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="11dp"
+                        android:drawablePadding="10dp"
+                        android:text="@string/unknown_bluetooth"
+                        android:textColor="@color/cornsilk"
+                        android:textSize="20sp"
+                        app:drawableStartCompat="@drawable/indicator_led_g"
+                        tools:ignore="TextContrastCheck" />
+
+                    <Button
+                        android:id="@+id/moreBtn"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="7dp"
+                        android:backgroundTint="@color/bluetooth_bg_color"
+                        android:text="@string/expand"
+                        android:textColor="@color/cornsilk"
+                        app:cornerRadius="5dp"
+                        tools:ignore="TextContrastCheck" />
+
+                    <Button
+                        android:id="@+id/Scan"
+                        android:layout_width="100dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="45dp"
+                        android:layout_marginEnd="7dp"
+                        android:backgroundTint="@color/bluetooth_bg_color"
+                        android:text="@string/scan"
+                        android:textColor="@color/cornsilk"
+                        app:cornerRadius="5dp"
+                        tools:ignore="TextContrastCheck" />
+
+                    <Button
+                        android:id="@+id/connBtn"
+                        android:layout_width="100dp"
+                        android:layout_height="82dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="90dp"
+                        android:layout_marginEnd="7dp"
+                        android:backgroundTint="@color/bluetooth_bg_color"
+                        android:text="@string/connect"
+                        android:textColor="@color/cornsilk"
+                        app:cornerRadius="5dp"
+                        tools:ignore="TextContrastCheck" />
+
+                    <ListView
+                        android:id="@+id/btList"
+                        android:layout_width="233dp"
+                        android:layout_height="122dp"
+
+                        android:layout_below="@+id/btName"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentBottom="false"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="11dp"
+                        android:layout_marginBottom="3dp" />
+
+                    <ProgressBar
+                        android:id="@+id/connProgressBar"
+                        style="?android:attr/progressBarStyle"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="2dp"
+                        android:layout_marginTop="9dp"
+                        android:visibility="invisible" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/CardViewWiFi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="#B2DFDB"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="5dp">
+
+                    <Button
+                        android:id="@+id/openBtn"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="5dp"
+                        android:backgroundTint="#B2DFDB"
+                        android:text="@string/open"
+                        tools:ignore="TextContrastCheck" />
+
+                    <Button
+                        android:id="@+id/closeBtn"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/openBtn"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:backgroundTint="#B2DFDB"
+                        android:text="@string/close"
+                        tools:ignore="TextContrastCheck" />
+
+                    <EditText
+                        android:id="@+id/ssidEditline"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/WiFiText"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="-2dp"
+                        android:ems="10"
+                        android:hint="@string/ssid"
+                        android:inputType="textPersonName"
+                        android:textSize="14sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <EditText
+                        android:id="@+id/passwdEditline"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/ssidEditline"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentBottom="false"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="-5dp"
+                        android:ems="10"
+                        android:hint="@string/password"
+                        android:inputType="textPersonName"
+                        android:textSize="14sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <TextView
+                        android:id="@+id/WiFiText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="0dp"
+                        android:text="@string/wifi"
+                        android:textColor="@color/cornsilk"
+                        android:textSize="20sp" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/CardViewBili"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                app:cardBackgroundColor="#E1BDC0"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="7dp"
-                    android:backgroundTint="@color/bluetooth_bg_color"
-                    android:text="@string/expand"
-                    android:textColor="@color/cornsilk"
-                    app:cornerRadius="5dp"
-                    tools:ignore="TextContrastCheck" />
+                    android:padding="5dp">
 
-                <Button
-                    android:id="@+id/connectBtn"
-                    android:layout_width="100dp"
-                    android:layout_height="117dp"
-                    android:layout_below="@+id/moreBtn"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="7dp"
-                    android:layout_marginBottom="3dp"
-                    android:backgroundTint="@color/bluetooth_bg_color"
-                    android:text="@string/connect_btn_text"
-                    android:textColor="@color/cornsilk"
-                    app:cornerRadius="10dp"
-                    tools:ignore="TextContrastCheck" />
+                    <Button
+                        android:id="@+id/biliBtn"
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="5dp"
+                        android:backgroundTint="#E1BDC0"
+                        android:text="@string/conf"
+                        android:visibility="visible"
+                        tools:ignore="TextContrastCheck" />
 
-                <ListView
-                    android:id="@+id/btList"
-                    android:layout_width="233dp"
-                    android:layout_height="122dp"
+                    <EditText
+                        android:id="@+id/biliUidEditline"
+                        android:layout_width="200dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginStart="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="0dp"
+                        android:ems="10"
+                        android:hint="@string/bilibili"
+                        android:inputType="textPersonName"
+                        android:textSize="16sp"
+                        tools:ignore="TouchTargetSizeCheck" />
+                </RelativeLayout>
 
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginStart="6dp"
-                    android:layout_marginTop="49dp"
-                    android:layout_marginBottom="3dp" />
-
-            </RelativeLayout>
-        </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
 
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,3 +10,7 @@ fun String.showTaost(context: Context, duration: Int = Toast.LENGTH_SHORT) {
 fun Int.showTaost(context: Context, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(context, this, duration).show()
 }
+
+fun Float.showTaost(context: Context, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(context, this.toString(), duration).show()
+}
