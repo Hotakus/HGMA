@@ -49,9 +49,19 @@ class MainActivity : AppCompatActivity() {
         icon?.setBounds(0, 0, icon.minimumWidth, icon.minimumHeight)
         binding.btName.setCompoundDrawables(icon, null, null, null)
 
-        val data = mutableListOf("HelloWorld", "HellGateMonitorBT", "HelloWorld", "HellGateMonitorBT", "HelloWorld", "HellGateMonitorBT")
+        val data = mutableListOf("CPU", "GPU", "Memory", "HardDisk", "HardDisk", "HardDisk")
         val adapter = ArrayAdapter(this, R.layout.my_list, data)
         binding.btList.adapter = adapter
+
+
+
+        val adapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, data)
+        binding.spinner1.adapter = adapter2
+        binding.spinner2.adapter = adapter2
+        binding.spinner3.adapter = adapter2
+        binding.spinner4.adapter = adapter2
+
+
 
         binding.connBtn.setOnClickListener {
             if (pf) {

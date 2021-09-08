@@ -9,8 +9,14 @@
     <string name="conf">配置</string>
     <string name="connect">连接</string>
     <string name="unconnect">取消连接</string>
+    <string name="locate">定位</string>
+    <string name="weather">天气</string>
     <string name="wifi">WiFi</string>
     <string name="ssid">SSID</string>
     <string name="bilibili">BiliBili UID</string>
     <string name="password">Password</string>
+    <string name="longitude">经度：</string>
+    <string name="app_key">App key</string>
+    <string name="null_text">null</string>
+    <string name="latitude">纬度：</string>
 </resources>
