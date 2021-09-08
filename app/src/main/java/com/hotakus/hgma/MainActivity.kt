@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             val cvbtExpandDp = if (pf2) {
                 cvbtWidthCollapseDp
             } else {
-                cvbtWidthCollapseDp + 900
+                cvbtWidthCollapseDp + 500
             }
             pf2 = !pf2
             cvbtParams.height = dp2px(this, cvbtExpandDp).toInt()
