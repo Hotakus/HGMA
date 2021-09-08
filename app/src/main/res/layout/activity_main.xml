@@ -118,7 +118,7 @@
                         android:layout_below="@+id/btName"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentBottom="false"
-                        android:layout_marginStart="6dp"
+                        android:layout_marginStart="5dp"
                         android:layout_marginTop="11dp"
                         android:layout_marginBottom="3dp" />
 
@@ -132,6 +132,97 @@
                         android:layout_marginStart="2dp"
                         android:layout_marginTop="9dp"
                         android:visibility="invisible" />
+
+                    <RelativeLayout
+                        android:id="@+id/btExtraArea"
+                        android:layout_width="362dp"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/btList"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:visibility="gone"
+                        tools:visibility="gone">
+
+                        <Button
+                            android:id="@+id/btSendBtn2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@+id/btMsgFrame"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="0dp"
+                            android:layout_marginBottom="0dp"
+                            android:layout_toEndOf="@+id/btMsgFrame"
+                            android:backgroundTint="@color/cornflowerblue"
+                            android:text="清空"
+                            android:textColor="@color/cornsilk" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/btMsgFrame"
+                            android:layout_width="270dp"
+                            android:layout_height="199dp"
+                            android:layout_below="@+id/seperateLine"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/my_tv"
+                            android:backgroundTint="@color/gainsboro" />
+
+                        <EditText
+                            android:id="@+id/btMsgSender"
+                            android:layout_width="270dp"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/btMsgFrame"
+                            android:layout_alignParentStart="true"
+                            android:layout_marginStart="0dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="6dp"
+                            android:background="@drawable/my_tv"
+                            android:backgroundTint="@color/gainsboro"
+                            android:ems="10"
+                            android:hint="Messages"
+                            android:inputType="textMultiLine"
+                            android:singleLine="false" />
+
+                        <TextView
+                            android:id="@+id/seperateLine"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#965079C4" />
+
+                        <Button
+                            android:id="@+id/btSendBtn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignTop="@+id/btMsgSender"
+                            android:layout_alignBottom="@+id/btMsgSender"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginEnd="0dp"
+                            android:layout_marginBottom="0dp"
+                            android:layout_toEndOf="@+id/btMsgSender"
+                            android:backgroundTint="@color/cornflowerblue"
+                            android:text="发送"
+                            android:textColor="@color/cornsilk" />
+
+                        <TextView
+                            android:id="@+id/proLink"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignTop="@+id/btMsgFrame"
+                            android:layout_alignParentEnd="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="0dp"
+                            android:layout_marginEnd="0dp"
+                            android:layout_toEndOf="@+id/btMsgFrame"
+                            android:text="项目地址"
+                            android:textAlignment="center" />
+
+                    </RelativeLayout>
 
                 </RelativeLayout>
 
@@ -431,7 +522,7 @@
                         android:layout_alignParentTop="true"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="5dp"
-                        android:layout_toEndOf="@+id/textView5"
+                        android:layout_toEndOf="@+id/leftTop"
                         android:spinnerMode="dropdown" />
 
                     <Spinner
@@ -441,7 +532,7 @@
                         android:layout_below="@+id/spinner1"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="5dp"
-                        android:layout_toEndOf="@+id/textView6"
+                        android:layout_toEndOf="@+id/leftBottom"
                         android:spinnerMode="dropdown" />
 
                     <Spinner
@@ -451,7 +542,7 @@
                         android:layout_below="@+id/spinner2"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="5dp"
-                        android:layout_toEndOf="@+id/textView7"
+                        android:layout_toEndOf="@+id/rightTop"
                         android:spinnerMode="dropdown" />
 
                     <Spinner
@@ -461,14 +552,14 @@
                         android:layout_below="@+id/spinner3"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="5dp"
-                        android:layout_toEndOf="@+id/textView9"
+                        android:layout_toEndOf="@+id/rightBottom"
                         android:spinnerMode="dropdown" />
 
                     <TextView
-                        android:id="@+id/textView7"
+                        android:id="@+id/rightTop"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/textView6"
+                        android:layout_below="@+id/leftBottom"
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
@@ -476,10 +567,10 @@
                         android:textSize="20sp" />
 
                     <TextView
-                        android:id="@+id/textView9"
+                        android:id="@+id/rightBottom"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/textView7"
+                        android:layout_below="@+id/rightTop"
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
@@ -504,7 +595,7 @@
                         tools:ignore="TextContrastCheck" />
 
                     <TextView
-                        android:id="@+id/textView5"
+                        android:id="@+id/leftTop"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
@@ -515,10 +606,10 @@
                         android:textSize="20sp" />
 
                     <TextView
-                        android:id="@+id/textView6"
+                        android:id="@+id/leftBottom"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/textView5"
+                        android:layout_below="@+id/leftTop"
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"

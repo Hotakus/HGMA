@@ -4,10 +4,11 @@ import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.MotionEvent
 import android.view.View
-import android.view.View.INVISIBLE
-import android.view.View.VISIBLE
+import android.view.View.*
 import android.widget.ArrayAdapter
 import androidx.core.content.res.ResourcesCompat
 import com.hotakus.hgma.databinding.ActivityMainBinding
@@ -20,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
     }
 
-    private fun _svl(view : View, motionEvent : MotionEvent) : Boolean {
+    private fun svl(view : View, motionEvent : MotionEvent) : Boolean {
         when (motionEvent.action) {
             MotionEvent.ACTION_DOWN -> {
                 binding.sv.requestDisallowInterceptTouchEvent(true)
@@ -36,7 +37,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var pf : Boolean = false
-    private var pf2 : Boolean = false
     private var cvbtWidthCollapseDp : Float = 0f
 
     @SuppressLint("ClickableViewAccessibility")
@@ -63,36 +63,33 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        binding.connBtn.setOnClickListener {
+        val cvbtParams = binding.CardViewBT.layoutParams
+        val cvbtWidthCollapseDp = px2dp(this, cvbtParams.height.toFloat())
+
+        binding.moreBtn.setOnClickListener {
             if (pf) {
-                binding.connProgressBar.visibility = INVISIBLE
+                binding.btExtraArea.visibility = GONE
             } else {
-                binding.connProgressBar.visibility = VISIBLE
+                binding.btExtraArea.visibility = VISIBLE
             }
             pf = !pf
         }
 
 
-        val cvbtParams = binding.CardViewBT.layoutParams
-        val cvbtWidthCollapseDp = px2dp(this, cvbtParams.height.toFloat())
-
-        binding.moreBtn.setOnClickListener {
-
-            val cvbtExpandDp = if (pf2) {
-                cvbtWidthCollapseDp
-            } else {
-                cvbtWidthCollapseDp + 500
-            }
-            pf2 = !pf2
-            cvbtParams.height = dp2px(this, cvbtExpandDp).toInt()
-            binding.CardViewBT.layoutParams = cvbtParams
+        binding.btList.setOnTouchListener {  view : View, motionEvent : MotionEvent ->
+            svl(view, motionEvent)
         }
-
 
         binding.btList.setOnTouchListener {  view : View, motionEvent : MotionEvent ->
-            _svl(view, motionEvent)
+            svl(view, motionEvent)
         }
 
+
+        val textView = binding.proLink
+        val testString = "<a href='https://github.com/Hotakus/HGMA'>项目地址</a>"
+        textView.movementMethod = LinkMovementMethod.getInstance()
+        val htmlString = Html.fromHtml(testString, Html.FROM_HTML_MODE_LEGACY)
+        textView.text = htmlString
 
     }
 }
