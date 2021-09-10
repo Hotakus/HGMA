@@ -56,10 +56,11 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="11dp"
                         android:drawablePadding="10dp"
+                        android:maxEms="20"
                         android:text="@string/unknown_bluetooth"
                         android:textColor="@color/cornsilk"
                         android:textSize="20sp"
-                        app:drawableStartCompat="@drawable/indicator_led_g"
+                        app:drawableStartCompat="@drawable/indicator_led_r"
                         tools:ignore="TextContrastCheck" />
 
                     <Button
@@ -79,7 +80,7 @@
                         tools:ignore="TextContrastCheck" />
 
                     <Button
-                        android:id="@+id/Scan"
+                        android:id="@+id/btScan"
                         android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
@@ -147,7 +148,7 @@
                         tools:visibility="gone">
 
                         <Button
-                            android:id="@+id/btSendBtn2"
+                            android:id="@+id/btCleanBtn"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_alignBottom="@+id/btMsgFrame"
