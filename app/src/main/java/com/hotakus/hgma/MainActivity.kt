@@ -46,6 +46,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var locationManager: LocationManager
 
+    private val bt = BT()
+
     private var indicatorRed: Drawable? = null
     private var indicatorGreen: Drawable? = null
 
@@ -139,7 +141,6 @@ class MainActivity : AppCompatActivity() {
             ad.create().show()
         }
 
-        val bt = BT()
         bt.btInit(this, bundle)
         registerReceiver(BT.receiver, BT.filter)
 
@@ -227,7 +228,12 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
 
+        bt.btDisConnect()
+        bt.btDisConnect()
+
         unregisterReceiver(BT.receiver)
     }
 
 }
+
+
