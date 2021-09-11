@@ -117,19 +117,21 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        val msg = "因 Android 10 启动蓝牙需要同时启动“定位”才能正常使用，" +
+                "所以请进设置给本应用授权定位权限。以便正常使用蓝牙功能。"
+        val ad = AlertDialog.Builder(this)
+            .setMessage(msg)
+            .setTitle("蓝牙与定位权限")
+            .setPositiveButton("了解", DialogInterface.OnClickListener { _, _ ->
+                val ll = LocationLogic()
+                ll.locationInit(this, bundle, locationManager)
+            })
+
+
         locationManager = getSystemService(LOCATION_SERVICE) as LocationManager
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            val msg = "因 Android 10 启动蓝牙需要同时启动“定位”才能正常使用，" +
-                    "所以请进设置给本应用授权定位权限。以便正常使用蓝牙功能。"
-            AlertDialog.Builder(this)
-                .setMessage(msg)
-                .setTitle("蓝牙与定位权限")
-                .setPositiveButton("了解", DialogInterface.OnClickListener { _, _->
-                    val ll = LocationLogic()
-                    ll.locationInit(this, bundle, locationManager)
-                })
-                .create()
-                .show()
+        val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        if (!isGpsEnabled) {
+            ad.create().show()
         }
 
         val bt = BT()
@@ -137,11 +139,20 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(BT.receiver, BT.filter)
 
         binding.btScan.setOnClickListener {
-            if (!BT.btScanFlag) {
-                binding.btName.text = getString(R.string.unknown_bluetooth)
-                bt.btScan()
-            } else {
-                "正在扫描，请稍等...".showTaost(this)
+            when {
+                !locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) -> {
+                    ad.create().show()
+                }
+
+                else -> {
+                    if (!BT.btScanFlag) {
+                        binding.btName.text = getString(R.string.unknown_bluetooth)
+                        bt.btInit(this, bundle)
+                        bt.btScan()
+                    } else {
+                        "正在扫描，请稍等...".showTaost(this)
+                    }
+                }
             }
         }
 
