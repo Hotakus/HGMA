@@ -49,25 +49,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
     }
 
-    private fun svl(view: View, motionEvent: MotionEvent): Boolean {
-        when (motionEvent.action) {
-            MotionEvent.ACTION_DOWN -> {
-                binding.sv.requestDisallowInterceptTouchEvent(true)
-            }
-            MotionEvent.ACTION_MOVE -> {
-
-            }
-            MotionEvent.ACTION_CANCEL -> {
-                binding.sv.requestDisallowInterceptTouchEvent(false)
-            }
-        }
-        return false
-    }
-
     private var pf: Boolean = false
-    private var cvbtWidthCollapseDp: Float = 0f
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         bundle = savedInstanceState
         super.onCreate(savedInstanceState)
@@ -109,20 +92,34 @@ class MainActivity : AppCompatActivity() {
         binding.btList.onItemClickListener =
             AdapterView.OnItemClickListener() { parent, _, position, _ ->
                 binding.btName.text = parent.getItemAtPosition(position).toString()
+
+                btConnect
             }
 
 
-        binding.btList.setOnTouchListener { view: View, motionEvent: MotionEvent ->
-            svl(view, motionEvent)
+        binding.btList.setOnTouchListener { _: View, motionEvent: MotionEvent ->
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    binding.sv.requestDisallowInterceptTouchEvent(true)
+                }
+                MotionEvent.ACTION_MOVE -> {
+
+                }
+                MotionEvent.ACTION_CANCEL -> {
+                    binding.sv.requestDisallowInterceptTouchEvent(false)
+                }
+            }
+            false
         }
 
 
+        /* BT and location begin */
         val msg = "因 Android 10 启动蓝牙需要同时启动“定位”才能正常使用，" +
-                "所以请进设置给本应用授权定位权限。以便正常使用蓝牙功能。"
+                "所以请进设置给本应用开启定位后手动授权定位权限。以便正常使用蓝牙功能。"
         val ad = AlertDialog.Builder(this)
             .setMessage(msg)
             .setTitle("蓝牙与定位权限")
-            .setPositiveButton("了解", DialogInterface.OnClickListener { _, _ ->
+            .setPositiveButton("了解", { _, _ ->
                 val ll = LocationLogic()
                 ll.locationInit(this, bundle, locationManager)
             })
@@ -150,11 +147,12 @@ class MainActivity : AppCompatActivity() {
                         bt.btInit(this, bundle)
                         bt.btScan()
                     } else {
-                        "正在扫描，请稍等...".showTaost(this)
+                        "正在扫描，请稍等...".showToast(this)
                     }
                 }
             }
         }
+        /* BT and location end */
 
     }
 

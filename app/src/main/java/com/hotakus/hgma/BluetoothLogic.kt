@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -16,11 +17,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.startActivityForResult
 import java.util.*
 
+
 private lateinit var activity: Activity
 private var bundle: Bundle? = null
 
-
-class BT() : AppCompatActivity() {
+class BT : AppCompatActivity() {
 
     companion object {
         var btAdapter: BluetoothAdapter = BluetoothAdapter.getDefaultAdapter()
@@ -28,8 +29,8 @@ class BT() : AppCompatActivity() {
         val btNameList = mutableListOf<String>()
         var btScanFlag: Boolean = false
 
-
         val filter = IntentFilter(BluetoothDevice.ACTION_FOUND)
+
         // Create a BroadcastReceiver for ACTION_FOUND.
         val receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
@@ -40,10 +41,11 @@ class BT() : AppCompatActivity() {
                         val device: BluetoothDevice? =
                             intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                         val rssi = intent.extras!!.getShort(BluetoothDevice.EXTRA_RSSI)
+                        val uuid : UUID?  = device?.uuids?.get(0)?.uuid
                         val deviceName = device?.name
                         val deviceHardwareAddress = device?.address // MAC address
 
-                        bi.add(btInfo(deviceName, deviceHardwareAddress, rssi))
+                        bi.add(btInfo(deviceName, uuid, deviceHardwareAddress, rssi, device))
                         Log.i("MainActivity", bi[bi.size - 1].toString())
 
                         if (deviceName != null) {
@@ -81,14 +83,15 @@ class BT() : AppCompatActivity() {
 
         when (btAdapter.startDiscovery()) {
             false -> {
-                Log.e("BluetoothLogic", "蓝牙扫描开启失败")
+                val str = "蓝牙扫描开启失败"
+                str.showToast(activity)
+                Log.e("BluetoothLogic", str)
                 return false
             }
             true -> {
                 btScanFlag = true
                 // 10min close bt scan
-                val task = CloseBtScan()
-                Timer().schedule(task, 10000)
+                Timer().schedule(CloseBtScan(), 10000)
             }
         }
 
@@ -96,13 +99,33 @@ class BT() : AppCompatActivity() {
     }
 
 
+    fun btConnect(bn : String) {
+
+        val btToConnName = bn   //"HellGateMonitorBT"
+        var btDevice : BluetoothDevice?
+
+        for (i in bi) {
+            if (i.btName?.compareTo(btToConnName) == 0) {
+                btDevice = i.btDevice
+                "a".showToast(activity)
+                //val bcs = btDevice?.createRfcommSocketToServiceRecord(i.uuid)
+            }
+
+        }
+    }
+
 }
 
-class CloseBtScan() : TimerTask() {
+
+private val alterHandle: Handler = Handler {
+    "蓝牙扫描结束".showToast(activity)
+    false
+}
+
+class CloseBtScan : TimerTask() {
     override fun run() {
         BT.btAdapter.cancelDiscovery()
         BT.btScanFlag = false
+        alterHandle.sendEmptyMessage(0)
     }
 }
-
-

@@ -1,3 +1,6 @@
 package com.hotakus.hgma
 
-data class btInfo(val btName : String?, val btMacAddress : String?, val btRSSI : Short?)
+import android.bluetooth.BluetoothDevice
+import java.util.*
+
+data class btInfo(val btName : String?, val uuid: UUID?, val btMacAddress : String?, val btRSSI : Short?, val btDevice: BluetoothDevice?)
