@@ -14,3 +14,7 @@ fun Int.showToast(context: Context, duration: Int = Toast.LENGTH_SHORT) {
 fun Float.showToast(context: Context, duration: Int = Toast.LENGTH_SHORT) {
     Toast.makeText(context, this.toString(), duration).show()
 }
+
+fun Double.showToast(context: Context, duration: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(context, this.toString(), duration).show()
+}

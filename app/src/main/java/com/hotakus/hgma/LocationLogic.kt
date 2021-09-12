@@ -1,39 +1,106 @@
 package com.hotakus.hgma
 
-import android.bluetooth.BluetoothAdapter
-import android.location.LocationManager
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.Context.LOCATION_SERVICE
-import android.content.Intent
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
-import android.provider.Settings
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat.getSystemService
+import java.text.DecimalFormat
 
 
-class LocationLogic() : AppCompatActivity() {
+class LocationLogic : AppCompatActivity() {
+
+    private var registerFlag = false
+
+    private val TAG = "LocationLogic"
+    var location : Location? = null
+    var latitude : String? = null
+    var longitude : String? = null
 
     companion object Co : AppCompatActivity() {
-        private val ll = LocationLogic()
-        var locationManager : LocationManager? = null
+        var locationManager: LocationManager? = null
+
+        @SuppressLint("StaticFieldLeak")
+        private var activity: Activity? = null
+        @SuppressLint("StaticFieldLeak")
+        private  var context : Context? = null
+
+        var provider : String = LocationManager.NETWORK_PROVIDER
     }
 
-    fun getInstance() : LocationLogic {
-        return ll
+    fun locationInit(_activity: Activity?, _context : Context?, bundle: Bundle?, _locationManager : LocationManager) {
+        activity = _activity
+        context = _context
+        locationManager = _locationManager
+
+        // 自动选择provider
+        val providers = locationManager!!.getProviders(true)
+        provider = when {
+            providers.contains(LocationManager.NETWORK_PROVIDER) -> {
+                //如果是网络定位
+                Log.i(TAG, "网络定位")
+                LocationManager.NETWORK_PROVIDER
+            }
+            providers.contains(LocationManager.GPS_PROVIDER) -> {
+                //如果是GPS定位
+                Log.i(TAG, "GPS定位")
+                LocationManager.GPS_PROVIDER
+            }
+            else -> {
+                Log.i(TAG, "没有可用的位置提供器")
+                LocationManager.NETWORK_PROVIDER
+            }
+        }
     }
 
-    fun locationInit(activity: Activity?, bundle: Bundle?, lm : LocationManager) {
-        if (locationManager == null) {
-            locationManager = lm
+    @SuppressLint("MissingPermission")
+    fun getLastLocation() {
+        location = locationManager?.getLastKnownLocation(provider)
+
+        val df = DecimalFormat("###.###")
+        latitude = df.format(location?.latitude)
+        longitude = df.format(location?.longitude)
+    }
+
+    @SuppressLint("MissingPermission")
+    fun locationRegister() {
+        if (!registerFlag) {
+            locationManager?.requestLocationUpdates(provider, 1000, 0.1f, locationListener)
+            registerFlag = true
+        }
+    }
+
+    fun locationUnregister() {
+        if (registerFlag) {
+            locationManager?.removeUpdates(locationListener)
+            registerFlag = false
         }
 
-        val isGpsEnabled = locationManager?.isProviderEnabled(LocationManager.GPS_PROVIDER)
-        if (!isGpsEnabled!!) {
-            val enableLocationIntent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
-            ActivityCompat.startActivityForResult(activity!!, enableLocationIntent, 1, bundle)
+    }
+
+    private val locationListener = object : LocationListener {
+        override fun onLocationChanged(_location: Location?) {
+            Log.i(TAG, "位置变化")
+            location = _location
         }
+
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+            Log.i(TAG, "定位状态变化")
+
+        }
+
+        override fun onProviderEnabled(provider: String?) {
+            "定位开启".showToast(activity!!)
+        }
+
+        override fun onProviderDisabled(provider: String?) {
+            "定位关闭".showToast(activity!!)
+        }
+
     }
 
 }

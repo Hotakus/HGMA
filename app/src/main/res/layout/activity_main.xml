@@ -129,10 +129,12 @@
                         style="?android:attr/progressBarStyle"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginStart="2dp"
-                        android:layout_marginTop="9dp"
+                        android:layout_alignStart="@+id/btName"
+                        android:layout_alignTop="@+id/btName"
+                        android:layout_alignBottom="@+id/btName"
+                        android:layout_marginStart="-7.7dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginBottom="0dp"
                         android:visibility="invisible" />
 
                     <RelativeLayout
@@ -246,7 +248,7 @@
                     android:padding="5dp">
 
                     <Button
-                        android:id="@+id/openBtn"
+                        android:id="@+id/wifiOpenBtn"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
@@ -260,10 +262,10 @@
                         tools:ignore="TextContrastCheck" />
 
                     <Button
-                        android:id="@+id/closeBtn"
+                        android:id="@+id/wifiCloseBtn"
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/openBtn"
+                        android:layout_below="@+id/wifiOpenBtn"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
                         android:layout_marginStart="31dp"
@@ -337,7 +339,7 @@
                     android:padding="5dp">
 
                     <TextView
-                        android:id="@+id/longitudeValue2"
+                        android:id="@+id/latitudeValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/WeatherText"
@@ -414,7 +416,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/WeatherText"
-                        android:layout_marginStart="60dp"
+                        android:layout_marginStart="70dp"
                         android:layout_marginTop="5dp"
                         android:layout_toEndOf="@+id/longitudeTextView"
                         android:text="@string/latitude"

@@ -3,7 +3,6 @@ package com.hotakus.hgma
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothSocket
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,16 +10,15 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.startActivityForResult
-import java.io.IOException
-import java.io.InputStream
-import java.io.OutputStream
+import org.json.JSONException
+import org.json.JSONObject
+import java.io.*
+import java.lang.Exception
 import java.util.*
 
 private val TAG = "BluetoothLogic"
@@ -92,6 +90,18 @@ class BT : AppCompatActivity() {
                 4 -> {
                     "蓝牙关闭".showToast(activity)
                 }
+                5 -> {
+                    "发送失败".showToast(activity)
+                }
+                6 -> {
+                    "HGM响应失败（无返回或返回格式错误）".showToast(activity)
+                }
+                7 -> {
+                    "Json解析错误".showToast(activity)
+                }
+                8 -> {
+                    "HGM响应成功".showToast(activity)
+                }
             }
             false
         }
@@ -104,15 +114,12 @@ class BT : AppCompatActivity() {
         const val MESSAGE_TOAST: Int = 2
 
         private val btCommunityHandler = Handler {
-            "test".showToast(activity)
             when (it.what) {
                 MESSAGE_READ -> {
 
                 }
                 MESSAGE_WRITE -> {
-                    val ba = it.obj as ByteArray
-                    val str = ba.toString()
-                    str.showToast(activity)
+
                 }
                 MESSAGE_TOAST -> {
                     it.data["toast"].toString().showToast(activity)
@@ -139,14 +146,7 @@ class BT : AppCompatActivity() {
                     btConnFlag = true
                     btClickableFlag = true
 
-                    val commandNormal =
-                        "{ \"Header\": \"Hgm\", \"DataType\": \"6\", \"Data\": { \"ssid\": \"trisuborn\", \"password\": \"12345678\" } }"
-                    val ba = commandNormal.toByteArray()
-
-                    connectedThread?.write(ba)
-
                 } else {
-                    toastHandler.sendEmptyMessage(2)
 
                     connectThread?.cancel()
                     connectThread = null
@@ -154,6 +154,9 @@ class BT : AppCompatActivity() {
                     btConnFlag = false
 
                     btClickableFlag = true
+
+                    toastHandler.sendEmptyMessage(2)
+
                 }
             }
         }
@@ -212,6 +215,8 @@ class BT : AppCompatActivity() {
     }
 
     fun btDisConnect() {
+        if (btAdapter.isDiscovering)
+            btAdapter.cancelDiscovery()
         connectThread?.cancel()
 
         connectThread = null
@@ -266,19 +271,22 @@ class BT : AppCompatActivity() {
 
         private var mmInStream: InputStream = btSocket!!.inputStream
         private var mmOutStream: OutputStream = btSocket!!.outputStream
-        private val mmBuffer: ByteArray = ByteArray(4096) // mmBuffer store for the stream
+        private val mmBuffer: ByteArray = ByteArray(1024) // mmBuffer store for the stream
+        private var receiveString = ""
 
         private var closeFlag = false
+
+        fun getRecvBuffer(): String {
+            return receiveString
+        }
 
         override fun run() {
             var numBytes: Int // bytes returned from read()
 
             // Keep listening to the InputStream until an exception occurs.
             while (true) {
-
                 if (closeFlag)
-                    return
-
+                    continue
                 if (!btConnFlag)
                     continue
 
@@ -287,17 +295,28 @@ class BT : AppCompatActivity() {
                     mmInStream.read(mmBuffer)
                 } catch (e: IOException) {
                     Log.d(TAG, "Input stream was disconnected", e)
-                    break
+                    continue
                 }
+
+
+                receiveString = ""
+                for (i in 0 until numBytes) {
+                    val tmp = mmBuffer[i]
+                    if (tmp in 1..127)
+                        receiveString += tmp.toInt().toChar()
+                }
+                Log.i(TAG, "蓝牙接收[$numBytes]: $receiveString")
 
                 // Send the obtained bytes to the UI activity.
                 val readMsg = btCommunityHandler.obtainMessage(
                     MESSAGE_READ, numBytes, -1,
-                    mmBuffer
+                    receiveString
                 )
                 readMsg.sendToTarget()
 
+
                 sleep(10)
+
             }
         }
 
@@ -341,6 +360,36 @@ class BT : AppCompatActivity() {
             btScanFlag = false
             toastHandler.sendEmptyMessage(0)
         }
+    }
+
+    fun sendData(data: String) {
+        connectedThread?.write(data.toByteArray())
+    }
+
+    fun sendHgmData(data: String, timeout : Long) : Boolean {
+        connectedThread?.write(data.toByteArray())
+        Thread.sleep(timeout)
+
+        val str = connectedThread?.getRecvBuffer()
+
+        try {
+            val jo = JSONObject(str!!)
+            val header = jo["Header"].toString()
+            val d = jo["Data"].toString()
+
+            if (header.compareTo("Hgm") != 0 || d.compareTo("ok") != 0) {
+                toastHandler.sendEmptyMessage(6)
+                return false
+            }
+
+            toastHandler.sendEmptyMessage(8)
+
+        } catch (e : JSONException) {
+            toastHandler.sendEmptyMessage(7)
+            return false
+        }
+
+        return true
     }
 
 }
