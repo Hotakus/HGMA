@@ -2,7 +2,7 @@
 
 HGM的配套安卓软件  
 
-https://img.shields.io/github/workflow/status/Hotakus/HGMA/Android%20CI?style=flat-square
+[![build](https://img.shields.io/github/workflow/status/Hotakus/HGMA/Android%20CI?style=flat-square)]()
 
 ---
 
