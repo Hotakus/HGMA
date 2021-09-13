@@ -1,6 +1,8 @@
 # HGMA
 
-HGM的配套安卓软件
+HGM的配套安卓软件  
+
+[![build](https://img.shields.io/github/workflow/status/Hotakus/HGMA/Android%20CI?style=flat-square)]()
 
 ---
 
