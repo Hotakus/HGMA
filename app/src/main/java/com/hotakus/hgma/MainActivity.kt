@@ -263,19 +263,23 @@ class MainActivity : AppCompatActivity() {
         }
 
 
+        val txt = getString(R.string.null_text)
         binding.locateBtn.setOnClickListener {
-            checkLocationPermission()
-            ll.getLastLocation()
+            val rst = checkLocationPermission()
 
-            binding.longitudeValue.text = ll.longitude
-            binding.latitudeValue.text = ll.latitude
+            if (rst) {
+                ll.getLastLocation()
+                binding.longitudeValue.text = ll.longitude
+                binding.latitudeValue.text = ll.latitude
+            } else {
+                binding.longitudeValue.text = txt
+                binding.latitudeValue.text = txt
+            }
         }
-
 
         binding.weatherBtn.setOnClickListener {
             val lat = binding.latitudeValue.text.toString()
             val lon = binding.longitudeValue.text.toString()
-            val txt = getString(R.string.null_text)
 
             if (lat.compareTo(txt) == 0 || lon.compareTo(txt) == 0) {
                 "未定位，无法配置".showToast(this)
@@ -299,7 +303,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun checkLocationPermission() {
+    private fun checkLocationPermission() : Boolean {
         val isProviderEnabled =
             LocationLogic.locationManager?.isProviderEnabled(LocationLogic.provider)
         if (!isProviderEnabled!!) {
@@ -312,6 +316,8 @@ class MainActivity : AppCompatActivity() {
                     startActivityForResult(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 1)
                 }
             ad.create().show()
+
+            return false
         }
 
         if (this.checkSelfPermission(
@@ -324,7 +330,11 @@ class MainActivity : AppCompatActivity() {
                 ACCESS_FINE_LOCATION,
                 ACCESS_COARSE_LOCATION
             ), 2)
+
+            return false
         }
+
+        return true
     }
 
     private val indicatorHandler: Handler = Handler {
