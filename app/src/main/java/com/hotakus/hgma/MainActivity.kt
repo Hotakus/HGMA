@@ -13,15 +13,21 @@ import android.provider.Settings
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.*
+import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.hotakus.hgma.databinding.ActivityMainBinding
 import java.util.*
+import kotlin.collections.ArrayList
 
 private const val TAG = "MainActivity"
 
@@ -30,6 +36,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationManager: LocationManager
 
     private val bt = BT()
+    private val btMsgFramework = BtMsgFramework.instance
     private val ll = LocationLogic()
 
     private var indicatorRed: Drawable? = null
@@ -44,6 +51,23 @@ class MainActivity : AppCompatActivity() {
     private var pf: Boolean = false
     private var connFlag: Boolean = false
 
+
+    fun touchListener(view: View, motionEvent: MotionEvent): Boolean {
+        when (motionEvent.action) {
+            MotionEvent.ACTION_DOWN -> {
+                binding.sv.requestDisallowInterceptTouchEvent(true)
+            }
+            MotionEvent.ACTION_MOVE -> {
+
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                binding.sv.requestDisallowInterceptTouchEvent(false)
+            }
+        }
+        return false
+    }
+
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         bundle = savedInstanceState
@@ -56,6 +80,7 @@ class MainActivity : AppCompatActivity() {
         checkLocationPermission()
         ll.locationRegister()
 
+        btMsgFramework.btMsgInit(this)
 
         binding.wifiOpenBtn.setOnClickListener {
             val dt = "0"
@@ -81,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             Log.i(TAG, wifiConfJson)
 
             Thread {
-                bt.sendHgmData(wifiConfJson, 100)
+                bt.sendHgmData(wifiConfJson, 200)
             }.start()
         }
 
@@ -107,10 +132,8 @@ class MainActivity : AppCompatActivity() {
 
 
         binding.moreBtn.setOnClickListener {
-
             val expandTxt = getString(R.string.expand)
             val collapseTxt = getString(R.string.collapse)
-
             if (pf) {
                 binding.btExtraArea.visibility = GONE
                 binding.moreBtn.text = expandTxt
@@ -120,6 +143,7 @@ class MainActivity : AppCompatActivity() {
             }
             pf = !pf
         }
+
 
         val textView = binding.proLink
         val testString = "<a href='https://github.com/Hotakus/HGMA'>项目地址</a>"
@@ -144,19 +168,11 @@ class MainActivity : AppCompatActivity() {
             }
 
 
-        binding.btList.setOnTouchListener { _: View, motionEvent: MotionEvent ->
-            when (motionEvent.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    binding.sv.requestDisallowInterceptTouchEvent(true)
-                }
-                MotionEvent.ACTION_MOVE -> {
-
-                }
-                MotionEvent.ACTION_CANCEL -> {
-                    binding.sv.requestDisallowInterceptTouchEvent(false)
-                }
-            }
-            false
+        binding.btList.setOnTouchListener { view: View, motionEvent: MotionEvent ->
+            touchListener(view, motionEvent)
+        }
+        binding.btMsgFrame.setOnTouchListener { view: View, motionEvent: MotionEvent ->
+            touchListener(view, motionEvent)
         }
 
 
@@ -235,6 +251,7 @@ class MainActivity : AppCompatActivity() {
                     if (!BT.btScanFlag) {
                         binding.btName.text = getString(R.string.unknown_bluetooth)
                         bt.btInit(this, bundle)
+                        bt.btDisConnect()
                         bt.btScan()
                     } else {
                         "正在扫描，请稍等...".showToast(this)
@@ -242,6 +259,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
         /* BT and location end */
         binding.biliBtn.setOnClickListener {
             val uid = binding.biliUidEditline.text
@@ -257,7 +275,7 @@ class MainActivity : AppCompatActivity() {
 
             val str = "{\"Header\": \"Hgm\", \"DataType\": \"3\", \"Data\": { \"uid\": \"$uid\"}}"
 
-            Thread  {
+            Thread {
                 bt.sendHgmData(str, 100)
             }.start()
         }
@@ -299,11 +317,33 @@ class MainActivity : AppCompatActivity() {
             // TODO:
         }
 
+        binding.btMsgSendBtn.setOnClickListener {
+            val isHgmMode = binding.HgmModeCheckBtn.isChecked
+            var msg = binding.btMsgSender.text.toString()
+            var sender = getString(R.string.sender)
+
+            if (msg.isEmpty())
+                return@setOnClickListener
+
+            if (!BT.btConnFlag)
+                sender = "${0x2757.toChar()}" + sender
+
+            if (isHgmMode)
+                msg = "{\"Header\": \"Hgm\", \"DataType\": \"6\", \"Data\":\"$msg\"}"
+
+            bt.sendData(msg)
+            btMsgFramework.updateMsg(sender, msg, BtMsgFramework.MSG_TYPE_SEND)
+        }
+
+        binding.btCleanBtn.setOnClickListener {
+            btMsgFramework.btMsgClear()
+        }
+
         // onCreate end
     }
 
 
-    private fun checkLocationPermission() : Boolean {
+    private fun checkLocationPermission(): Boolean {
         val isProviderEnabled =
             LocationLogic.locationManager?.isProviderEnabled(LocationLogic.provider)
         if (!isProviderEnabled!!) {
@@ -326,10 +366,12 @@ class MainActivity : AppCompatActivity() {
                 ACCESS_COARSE_LOCATION
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            requestPermissions(arrayOf(
-                ACCESS_FINE_LOCATION,
-                ACCESS_COARSE_LOCATION
-            ), 2)
+            requestPermissions(
+                arrayOf(
+                    ACCESS_FINE_LOCATION,
+                    ACCESS_COARSE_LOCATION
+                ), 2
+            )
 
             return false
         }
@@ -362,18 +404,26 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    override fun onPause() {
-        super.onPause()
-    }
-
     override fun onDestroy() {
         super.onDestroy()
 
         ll.locationUnregister()
         bt.btDisConnect()
         unregisterReceiver(BT.receiver)
+
+
     }
 
+
 }
+
+
+
+
+
+
+
+
+
 
 

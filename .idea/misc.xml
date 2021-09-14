@@ -6,12 +6,19 @@
         <entry key="..\:/SoftWares/JetBrains/apps/Android/Sdk/platforms/android-29/data/res/layout/simple_list_item_1.xml" value="0.37604166666666666" />
         <entry key="..\:/WorkSpace/Android/HGMA/app/src/main/res/drawable/indicator_led_g.xml" value="0.3963541666666667" />
         <entry key="..\:/WorkSpace/Android/HGMA/app/src/main/res/drawable/indicator_led_r.xml" value="0.3963541666666667" />
-        <entry key="..\:/WorkSpace/Android/HGMA/app/src/main/res/layout/activity_main.xml" value="0.72" />
+        <entry key="..\:/WorkSpace/Android/HGMA/app/src/main/res/layout/activity_main.xml" value="0.4218978102189781" />
         <entry key="..\:/WorkSpace/Android/HGMA/app/src/main/res/layout/layout.xml" value="0.18213925327951563" />
         <entry key="..\:/WorkSpace/Android/HGMA/app/src/main/res/layout/my_list2.xml" value="0.15029142381348876" />
         <entry key="..\:/WorkSpace/Android/HGMA/app/src/main/res/layout/my_tv.xml" value="0.11945731303772336" />
+        <entry key="..\:/WorkSpace/Android/HGMA/app/src/main/res/layout/rv_bt_msg.xml" value="0.11945731303772336" />
+        <entry key="..\:/WorkSpace/Android/HGMA/app/src/main/res/layout/rv_bt_msg_left.xml" value="0.536" />
+        <entry key="..\:/WorkSpace/Android/HGMA/app/src/main/res/layout/rv_bt_msg_right.xml" value="0.6" />
+        <entry key="..\:/WorkSpace/Android/HGMA/app/src/main/res/layout/rv_test.xml" value="0.6" />
       </map>
     </option>
+  </component>
+  <component name="JavadocGenerationManager">
+    <option name="OUTPUT_DIRECTORY" value="$USER_HOME$/Desktop" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />

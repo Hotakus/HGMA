@@ -17,8 +17,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat.startActivityForResult
 import org.json.JSONException
 import org.json.JSONObject
-import java.io.*
-import java.lang.Exception
+import java.io.IOException
+import java.io.InputStream
+import java.io.OutputStream
 import java.util.*
 
 private val TAG = "BluetoothLogic"
@@ -35,6 +36,8 @@ class BT : AppCompatActivity() {
         var btScanFlag: Boolean = false
         var btConnFlag: Boolean = false
         var btClickableFlag: Boolean = true
+
+        var btNameConnected: String = ""
 
         private var btDevice: BluetoothDevice? = null
         private var btSocket: BluetoothSocket? = null
@@ -55,7 +58,7 @@ class BT : AppCompatActivity() {
                         val deviceName = device?.name
                         val deviceHardwareAddress = device?.address // MAC address
 
-                        bi.add(btInfo(deviceName, uuid, deviceHardwareAddress, rssi, device))
+                        bi.add(btInfo(deviceName, false, uuid, deviceHardwareAddress, rssi, device))
                         Log.i(TAG, bi[bi.size - 1].toString())
 
                         if (deviceName != null) {
@@ -116,7 +119,7 @@ class BT : AppCompatActivity() {
         private val btCommunityHandler = Handler {
             when (it.what) {
                 MESSAGE_READ -> {
-
+                    Log.i(TAG, "Bluetooth read [${it.arg1} bytes]")
                 }
                 MESSAGE_WRITE -> {
 
@@ -146,8 +149,9 @@ class BT : AppCompatActivity() {
                     btConnFlag = true
                     btClickableFlag = true
 
-                } else {
+                    // TODO: check bt
 
+                } else {
                     connectThread?.cancel()
                     connectThread = null
                     btCommunityManager = null
@@ -156,7 +160,6 @@ class BT : AppCompatActivity() {
                     btClickableFlag = true
 
                     toastHandler.sendEmptyMessage(2)
-
                 }
             }
         }
@@ -222,7 +225,6 @@ class BT : AppCompatActivity() {
         connectThread = null
         btCommunityManager = null
         btConnFlag = false
-        toastHandler.sendEmptyMessage(4)
     }
 
     inner class ConnectThread : Thread() {
@@ -240,21 +242,16 @@ class BT : AppCompatActivity() {
             }
 
             try {
-                // Connect to the remote device through the socket. This call blocks
-                // until it succeeds or throws an exception.
                 btSocket?.connect()
-
                 if (btCommunityManager == null) {
                     btCommunityManager = BtCommunityManager()
                     btCommunityManager?.start()
                 }
-
             } catch (e: IOException) {
                 Log.e(TAG, "Could not connect the client socket", e)
                 toastHandler.sendEmptyMessage(2)
                 cancel()
             }
-
         }
 
         // Closes the client socket and causes the thread to finish.
@@ -266,6 +263,19 @@ class BT : AppCompatActivity() {
             }
         }
     }
+
+
+    val btReceiveHandler = Handler {
+
+        BtMsgFramework.instance.updateMsg(
+            btNameConnected,
+            connectedThread?.getRecvBuffer(),
+            BtMsgFramework.MSG_TYPE_RECEIVED
+        )
+
+        false
+    }
+
 
     inner class ConnectedThread() : Thread() {
 
@@ -298,7 +308,6 @@ class BT : AppCompatActivity() {
                     continue
                 }
 
-
                 receiveString = ""
                 for (i in 0 until numBytes) {
                     val tmp = mmBuffer[i]
@@ -306,6 +315,7 @@ class BT : AppCompatActivity() {
                         receiveString += tmp.toInt().toChar()
                 }
                 Log.i(TAG, "蓝牙接收[$numBytes]: $receiveString")
+                btReceiveHandler.sendEmptyMessage(0)
 
                 // Send the obtained bytes to the UI activity.
                 val readMsg = btCommunityHandler.obtainMessage(
@@ -314,9 +324,7 @@ class BT : AppCompatActivity() {
                 )
                 readMsg.sendToTarget()
 
-
                 sleep(10)
-
             }
         }
 
@@ -362,11 +370,12 @@ class BT : AppCompatActivity() {
         }
     }
 
+
     fun sendData(data: String) {
         connectedThread?.write(data.toByteArray())
     }
 
-    fun sendHgmData(data: String, timeout : Long) : Boolean {
+    fun sendHgmData(data: String, timeout: Long): Boolean {
         connectedThread?.write(data.toByteArray())
         Thread.sleep(timeout)
 
@@ -384,7 +393,8 @@ class BT : AppCompatActivity() {
 
             toastHandler.sendEmptyMessage(8)
 
-        } catch (e : JSONException) {
+        } catch (e: JSONException) {
+            Log.e(TAG, "", e)
             toastHandler.sendEmptyMessage(7)
             return false
         }

@@ -19,4 +19,5 @@
     <string name="app_key">App key</string>
     <string name="null_text">null</string>
     <string name="latitude">纬度：</string>
+    <string name="sender">Hotakus</string>
 </resources>
