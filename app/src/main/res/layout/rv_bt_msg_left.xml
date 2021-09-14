@@ -17,20 +17,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
-            android:text=""
+            android:text="啊实打实大苏打"
             android:textSize="11sp" />
 
         <LinearLayout
             android:id="@+id/btMsgBodyLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start">
+            android:layout_gravity="start"
+            android:background="@drawable/chat_left">
 
             <TextView
                 android:id="@+id/btMsgText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="dasdasasda十大"
                 android:textAlignment="textStart"
                 android:textSize="14sp" />
         </LinearLayout>

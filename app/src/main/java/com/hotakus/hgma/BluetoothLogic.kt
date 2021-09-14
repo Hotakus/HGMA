@@ -213,6 +213,8 @@ class BT : AppCompatActivity() {
 
                 connectedThread = ConnectedThread()
                 connectedThread?.start()
+
+                btNameConnected = bn
             }
         }
     }
@@ -225,6 +227,8 @@ class BT : AppCompatActivity() {
         connectThread = null
         btCommunityManager = null
         btConnFlag = false
+
+        btNameConnected = ""
     }
 
     inner class ConnectThread : Thread() {

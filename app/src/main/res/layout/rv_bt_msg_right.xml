@@ -30,7 +30,8 @@
                 android:id="@+id/btMsgText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="dasd"
+                android:background="@drawable/chat_right"
                 android:textAlignment="textStart"
                 android:textSize="14sp" />
         </LinearLayout>
