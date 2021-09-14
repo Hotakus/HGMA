@@ -13,21 +13,15 @@ import android.provider.Settings
 import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.View.*
-import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.hotakus.hgma.databinding.ActivityMainBinding
 import java.util.*
-import kotlin.collections.ArrayList
 
 private const val TAG = "MainActivity"
 
@@ -49,10 +43,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private var pf: Boolean = false
-    private var connFlag: Boolean = false
 
-
-    fun touchListener(view: View, motionEvent: MotionEvent): Boolean {
+    private fun touchListener(motionEvent: MotionEvent): Boolean {
         when (motionEvent.action) {
             MotionEvent.ACTION_DOWN -> {
                 binding.sv.requestDisallowInterceptTouchEvent(true)
@@ -168,11 +160,11 @@ class MainActivity : AppCompatActivity() {
             }
 
 
-        binding.btList.setOnTouchListener { view: View, motionEvent: MotionEvent ->
-            touchListener(view, motionEvent)
+        binding.btList.setOnTouchListener { _: View, motionEvent: MotionEvent ->
+            touchListener(motionEvent)
         }
-        binding.btMsgFrame.setOnTouchListener { view: View, motionEvent: MotionEvent ->
-            touchListener(view, motionEvent)
+        binding.btMsgFrame.setOnTouchListener { _: View, motionEvent: MotionEvent ->
+            touchListener(motionEvent)
         }
 
 
@@ -180,29 +172,26 @@ class MainActivity : AppCompatActivity() {
         bt.btInit(this, bundle)
         registerReceiver(BT.receiver, BT.filter)
 
-        var pbvFlag = false
-        val pbv = Thread {
+        Thread {
             while (true) {
-                if (pbvFlag && !BT.btConnFlag) {
-                    pbvHandler.sendEmptyMessage(0)
-                    pbvFlag = false
-                } else if (BT.btConnFlag) {
+                if (BT.btConnDone) {
                     pbvHandler.sendEmptyMessage(1)
+                    Log.i(TAG, "BT.btConnDone")
+                } else {
+                    pbvHandler.sendEmptyMessage(0)
+                    Log.i(TAG, "BT.btConnDone false")
                 }
                 Thread.sleep(100)
             }
-        }
-        pbv.start()
+        }.start()
 
         binding.btConnBtn.setOnClickListener {
             val name = binding.btName.text.toString()
-
             if (BT.btConnFlag) {
                 bt.btDisConnect()
             } else {
                 if (name.compareTo(getString(R.string.unknown_bluetooth)) != 0) {
                     bt.btConnect(name)
-                    pbvFlag = true
                 }
             }
         }
@@ -216,15 +205,6 @@ class MainActivity : AppCompatActivity() {
             indicatorGreen!!.minimumHeight
         )
         binding.btName.setCompoundDrawables(indicatorRed, null, null, null)
-
-
-        // btConnBtn 可点击性 控制线程
-        Thread {
-            while (true) {
-                binding.btConnBtn.isClickable = BT.btClickableFlag
-                Thread.sleep(100)
-            }
-        }.start()
 
         // btConnBtn 连接状态 控制线程
         Thread {

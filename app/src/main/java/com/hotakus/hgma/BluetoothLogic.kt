@@ -1,5 +1,6 @@
 package com.hotakus.hgma
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
@@ -24,6 +25,7 @@ import java.util.*
 
 private val TAG = "BluetoothLogic"
 
+@SuppressLint("StaticFieldLeak")
 private lateinit var activity: Activity
 private var bundle: Bundle? = null
 
@@ -35,7 +37,7 @@ class BT : AppCompatActivity() {
         val btNameList = mutableListOf<String>()
         var btScanFlag: Boolean = false
         var btConnFlag: Boolean = false
-        var btClickableFlag: Boolean = true
+        var btConnDone: Boolean = true
 
         var btNameConnected: String = ""
 
@@ -105,6 +107,12 @@ class BT : AppCompatActivity() {
                 8 -> {
                     "HGM响应成功".showToast(activity)
                 }
+                9 -> {
+                    btConnDone = false
+                }
+                10 -> {
+                    btConnDone = true
+                }
             }
             false
         }
@@ -137,6 +145,7 @@ class BT : AppCompatActivity() {
         class BtCommunityManager : Thread() {
             override fun run() {
                 var timeout = 8000
+
                 while (!btSocket?.isConnected!!) {
                     sleep(100)
                     if (timeout > 0)
@@ -147,20 +156,20 @@ class BT : AppCompatActivity() {
                 if (timeout > 0) {
                     toastHandler.sendEmptyMessage(1)
                     btConnFlag = true
-                    btClickableFlag = true
 
                     // TODO: check bt
 
                 } else {
+                    btConnFlag = false
+
                     connectThread?.cancel()
                     connectThread = null
                     btCommunityManager = null
-                    btConnFlag = false
-
-                    btClickableFlag = true
 
                     toastHandler.sendEmptyMessage(2)
                 }
+
+                toastHandler.sendEmptyMessage(10)
             }
         }
 
@@ -202,17 +211,21 @@ class BT : AppCompatActivity() {
     }
 
     fun btConnect(bn: String) {
-        btClickableFlag = false
         for (i in bi) {
             if (i.btName?.compareTo(bn) == 0) {
                 btDevice = i.btDevice
                 btSocket = btDevice?.createRfcommSocketToServiceRecord(i.uuid)
+
+                toastHandler.sendEmptyMessage(9)
 
                 connectThread = ConnectThread()
                 connectThread?.start()
 
                 connectedThread = ConnectedThread()
                 connectedThread?.start()
+
+                btCommunityManager = BtCommunityManager()
+                btCommunityManager?.start()
 
                 btNameConnected = bn
             }
@@ -247,13 +260,9 @@ class BT : AppCompatActivity() {
 
             try {
                 btSocket?.connect()
-                if (btCommunityManager == null) {
-                    btCommunityManager = BtCommunityManager()
-                    btCommunityManager?.start()
-                }
             } catch (e: IOException) {
                 Log.e(TAG, "Could not connect the client socket", e)
-                toastHandler.sendEmptyMessage(2)
+                //toastHandler.sendEmptyMessage(2)
                 cancel()
             }
         }
