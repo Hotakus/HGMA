@@ -2,6 +2,7 @@ package com.hotakus.hgma
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,8 +46,10 @@ class BtMsgFramework : AppCompatActivity() {
 
     fun updateMsg(user: String, msg: String?, msgType: Int) {
         // Remove the stale msg from msg list
-        if (btMsgList.size == MSG_MAX_COUNT)
+        if (btMsgList.size == MSG_MAX_COUNT) {
             btMsgList.removeAt(0)
+            rv?.adapter?.notifyItemRemoved(0)
+        }
 
         if (msg == null)
             return

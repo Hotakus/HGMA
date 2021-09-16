@@ -59,7 +59,6 @@ class MainActivity : AppCompatActivity() {
         return false
     }
 
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         bundle = savedInstanceState
@@ -75,7 +74,7 @@ class MainActivity : AppCompatActivity() {
         btMsgFramework.btMsgInit(this)
 
         binding.wifiOpenBtn.setOnClickListener {
-            val dt = 3
+            val dt = 4
             val ssid = binding.ssidEditline.text
             val passwd = binding.passwdEditline.text
 
@@ -94,7 +93,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             val wifiConfJson =
-                "{ \"Header\": \"Hgm\", \"DataType\": \"$dt\", \"Data\": { \"ssid\": \"$ssid\", \"password\": \"$passwd\" } }"
+                "{ \"Header\": \"${BT.hgmHeader}\", \"DataType\": \"$dt\", \"Data\": { \"ssid\": \"$ssid\", \"password\": \"$passwd\" } }"
             Log.i(TAG, wifiConfJson)
 
             Thread {
@@ -109,8 +108,8 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val dt = 4
-            val wifiConfJson = "{ \"Header\": \"Hgm\", \"DataType\": \"$dt\", \"Data\": \"\"}"
+            val dt = 5
+            val wifiConfJson = "{ \"Header\": \"${BT.hgmHeader}\", \"DataType\": \"$dt\", \"Data\": \"\"}"
             Log.i(TAG, wifiConfJson)
 
             Thread {
@@ -142,8 +141,6 @@ class MainActivity : AppCompatActivity() {
         val htmlString = Html.fromHtml(testString, Html.FROM_HTML_MODE_LEGACY)
         textView.text = htmlString
 
-
-        // TODO:
         val data = mutableListOf("CPU", "GPU", "Memory", "HardDisk", "Network", "Fans")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, data)
         binding.spinner1.adapter = adapter
@@ -175,12 +172,10 @@ class MainActivity : AppCompatActivity() {
             while (true) {
                 if (BT.btConnDone) {
                     pbvHandler.sendEmptyMessage(1)
-                    Log.i(TAG, "BT.btConnDone")
                 } else {
                     pbvHandler.sendEmptyMessage(0)
-                    Log.i(TAG, "BT.btConnDone false")
                 }
-                Thread.sleep(100)
+                Thread.sleep(500)
             }
         }.start()
 
@@ -241,7 +236,7 @@ class MainActivity : AppCompatActivity() {
 
         /* BT and location end */
         binding.biliBtn.setOnClickListener {
-            val dt = 6
+            val dt = 7
             val uid = binding.biliUidEditline.text
             if (uid.isEmpty()) {
                 "UID不能为空".showToast(this)
@@ -253,7 +248,7 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val str = "{\"Header\": \"Hgm\", \"DataType\": \"$dt\", \"Data\": { \"uid\": \"$uid\"}}"
+            val str = "{\"Header\": \"${BT.hgmHeader}\", \"DataType\": \"$dt\", \"Data\": { \"uid\": \"$uid\"}}"
 
             Thread {
                 bt.sendHgmData(str, 200)
@@ -261,7 +256,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.hardwareConfBtn.setOnClickListener {
-            val dt = 7
+            val dt = 8
 
             if (!BT.btConnFlag) {
                 "蓝牙未连接".showToast(this)
@@ -285,7 +280,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.weatherBtn.setOnClickListener {
-            val dt = 5
+            val dt = 6
             val lat = binding.latitudeValue.text.toString()
             val lon = binding.longitudeValue.text.toString()
 
@@ -308,7 +303,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btMsgSendBtn.setOnClickListener {
-            val dt = 2
+            val dt = 3
             val isHgmMode = binding.HgmModeCheckBtn.isChecked
             var msg = binding.btMsgSender.text.toString()
             var sender = getString(R.string.sender)
@@ -320,7 +315,7 @@ class MainActivity : AppCompatActivity() {
                 sender = "${0x2757.toChar()}" + sender
 
             if (isHgmMode)
-                msg = "{\"Header\": \"Hgm\", \"DataType\": \"$dt\", \"Data\":\"$msg\"}"
+                msg = "{\"Header\": \"${BT.hgmHeader}\", \"DataType\": \"$dt\", \"Data\":\"$msg\"}"
 
             bt.sendData(msg)
             btMsgFramework.updateMsg(sender, msg, BtMsgFramework.MSG_TYPE_SEND)

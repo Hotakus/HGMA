@@ -533,7 +533,7 @@
                         android:layout_marginBottom="0dp"
                         android:layout_toEndOf="@+id/spinner1"
                         android:backgroundTint="#C5CAE9"
-                        android:text="获取配置"
+                        android:text="默认配置"
                         android:visibility="visible"
                         tools:ignore="TextContrastCheck" />
 

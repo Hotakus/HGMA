@@ -41,6 +41,8 @@ class BT : AppCompatActivity() {
 
         var btNameConnected: String = ""
 
+        const val hgmHeader = "HgmBT"
+
         private var btDevice: BluetoothDevice? = null
         private var btSocket: BluetoothSocket? = null
 
@@ -399,7 +401,7 @@ class BT : AppCompatActivity() {
             val header = jo["Header"].toString()
             val d = jo["Data"].toString()
 
-            if (header.compareTo("Hgm") != 0 || d.compareTo("ok") != 0) {
+            if (header.compareTo(hgmHeader) != 0 || d.compareTo("ok") != 0) {
                 toastHandler.sendEmptyMessage(6)
                 return false
             }
