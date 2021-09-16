@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         btMsgFramework.btMsgInit(this)
 
         binding.wifiOpenBtn.setOnClickListener {
-            val dt = "0"
+            val dt = 3
             val ssid = binding.ssidEditline.text
             val passwd = binding.passwdEditline.text
 
@@ -109,12 +109,12 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val dt = "1"
+            val dt = 4
             val wifiConfJson = "{ \"Header\": \"Hgm\", \"DataType\": \"$dt\", \"Data\": \"\"}"
             Log.i(TAG, wifiConfJson)
 
             Thread {
-                bt.sendHgmData(wifiConfJson, 100)
+                bt.sendHgmData(wifiConfJson, 200)
             }.start()
         }
 
@@ -136,7 +136,6 @@ class MainActivity : AppCompatActivity() {
             pf = !pf
         }
 
-
         val textView = binding.proLink
         val testString = "<a href='https://github.com/Hotakus/HGMA'>项目地址</a>"
         textView.movementMethod = LinkMovementMethod.getInstance()
@@ -145,12 +144,12 @@ class MainActivity : AppCompatActivity() {
 
 
         // TODO:
-        val data = mutableListOf("CPU", "GPU", "Memory", "HardDisk", "HardDisk", "HardDisk")
-        val adapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, data)
-        binding.spinner1.adapter = adapter2
-        binding.spinner2.adapter = adapter2
-        binding.spinner3.adapter = adapter2
-        binding.spinner4.adapter = adapter2
+        val data = mutableListOf("CPU", "GPU", "Memory", "HardDisk", "Network", "Fans")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, data)
+        binding.spinner1.adapter = adapter
+        binding.spinner2.adapter = adapter
+        binding.spinner3.adapter = adapter
+        binding.spinner4.adapter = adapter
 
         binding.btList.onItemClickListener =
             AdapterView.OnItemClickListener() { parent, _, position, _ ->
@@ -242,6 +241,7 @@ class MainActivity : AppCompatActivity() {
 
         /* BT and location end */
         binding.biliBtn.setOnClickListener {
+            val dt = 6
             val uid = binding.biliUidEditline.text
             if (uid.isEmpty()) {
                 "UID不能为空".showToast(this)
@@ -253,13 +253,22 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val str = "{\"Header\": \"Hgm\", \"DataType\": \"3\", \"Data\": { \"uid\": \"$uid\"}}"
+            val str = "{\"Header\": \"Hgm\", \"DataType\": \"$dt\", \"Data\": { \"uid\": \"$uid\"}}"
 
             Thread {
-                bt.sendHgmData(str, 100)
+                bt.sendHgmData(str, 200)
             }.start()
         }
 
+        binding.hardwareConfBtn.setOnClickListener {
+            val dt = 7
+
+            if (!BT.btConnFlag) {
+                "蓝牙未连接".showToast(this)
+                return@setOnClickListener
+            }
+
+        }
 
         val txt = getString(R.string.null_text)
         binding.locateBtn.setOnClickListener {
@@ -276,6 +285,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.weatherBtn.setOnClickListener {
+            val dt = 5
             val lat = binding.latitudeValue.text.toString()
             val lon = binding.longitudeValue.text.toString()
 
@@ -298,6 +308,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btMsgSendBtn.setOnClickListener {
+            val dt = 2
             val isHgmMode = binding.HgmModeCheckBtn.isChecked
             var msg = binding.btMsgSender.text.toString()
             var sender = getString(R.string.sender)
@@ -309,7 +320,7 @@ class MainActivity : AppCompatActivity() {
                 sender = "${0x2757.toChar()}" + sender
 
             if (isHgmMode)
-                msg = "{\"Header\": \"Hgm\", \"DataType\": \"6\", \"Data\":\"$msg\"}"
+                msg = "{\"Header\": \"Hgm\", \"DataType\": \"$dt\", \"Data\":\"$msg\"}"
 
             bt.sendData(msg)
             btMsgFramework.updateMsg(sender, msg, BtMsgFramework.MSG_TYPE_SEND)

@@ -147,7 +147,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="5dp"
-                        android:visibility="visible"
+                        android:visibility="gone"
                         tools:visibility="gone">
 
                         <Button
@@ -158,7 +158,7 @@
                             android:layout_alignParentEnd="true"
                             android:layout_marginEnd="0dp"
                             android:layout_marginBottom="0dp"
-                            android:backgroundTint="@color/cornflowerblue"
+                            android:backgroundTint="@color/bluetooth_bg_color"
                             android:text="清空"
                             android:textColor="@color/cornsilk" />
 
@@ -173,11 +173,11 @@
                             android:layout_marginEnd="5dp"
                             android:layout_toStartOf="@+id/HgmModeCheckBtn"
                             android:background="@drawable/my_tv"
-                            android:backgroundTint="@color/gainsboro"
+                            android:backgroundTint="@color/whitesmoke"
                             android:fadeScrollbars="true"
+                            android:scrollbarDefaultDelayBeforeFade="100"
                             android:scrollbarFadeDuration="200"
                             android:scrollbarSize="3dp"
-                            android:scrollbarDefaultDelayBeforeFade="100"
                             android:scrollbarThumbVertical="@color/gray"
                             android:scrollbars="vertical" />
 
@@ -193,7 +193,7 @@
                             android:layout_marginEnd="-1dp"
                             android:layout_marginBottom="6dp"
                             android:background="@drawable/my_tv"
-                            android:backgroundTint="@color/gainsboro"
+                            android:backgroundTint="@color/whitesmoke"
                             android:ems="10"
                             android:hint="Messages"
                             android:inputType="textMultiLine"
@@ -215,7 +215,7 @@
                             android:layout_marginTop="0dp"
                             android:layout_marginEnd="0dp"
                             android:layout_marginBottom="0dp"
-                            android:backgroundTint="@color/cornflowerblue"
+                            android:backgroundTint="@color/bluetooth_bg_color"
                             android:text="发送"
                             android:textColor="@color/cornsilk" />
 
@@ -521,10 +521,10 @@
                     android:padding="5dp">
 
                     <Button
-                        android:id="@+id/getConfBtn"
+                        android:id="@+id/getHardwareConfBtn"
                         android:layout_width="120dp"
                         android:layout_height="60dp"
-                        android:layout_below="@+id/HWConfBtn"
+                        android:layout_below="@+id/hardwareConfBtn"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="false"
                         android:layout_marginStart="31dp"
@@ -600,7 +600,7 @@
                         android:textSize="20sp" />
 
                     <Button
-                        android:id="@+id/HWConfBtn"
+                        android:id="@+id/hardwareConfBtn"
                         android:layout_width="120dp"
                         android:layout_height="60dp"
                         android:layout_alignParentTop="true"
