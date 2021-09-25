@@ -109,7 +109,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             val dt = 5
-            val wifiConfJson = "{ \"Header\": \"${BT.hgmHeader}\", \"DataType\": \"$dt\", \"Data\": \"\"}"
+            val wifiConfJson =
+                "{ \"Header\": \"${BT.hgmHeader}\", \"DataType\": \"$dt\", \"Data\": \"\"}"
             Log.i(TAG, wifiConfJson)
 
             Thread {
@@ -248,7 +249,8 @@ class MainActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val str = "{\"Header\": \"${BT.hgmHeader}\", \"DataType\": \"$dt\", \"Data\": { \"uid\": \"$uid\"}}"
+            val str =
+                "{\"Header\": \"${BT.hgmHeader}\", \"DataType\": \"$dt\", \"Data\": { \"uid\": \"$uid\"}}"
 
             Thread {
                 bt.sendHgmData(str, 200)
@@ -262,7 +264,6 @@ class MainActivity : AppCompatActivity() {
                 "蓝牙未连接".showToast(this)
                 return@setOnClickListener
             }
-
         }
 
         val txt = getString(R.string.null_text)
@@ -283,13 +284,14 @@ class MainActivity : AppCompatActivity() {
             val dt = 6
             val lat = binding.latitudeValue.text.toString()
             val lon = binding.longitudeValue.text.toString()
+            val key = binding.appKeyEditline.text.toString()
 
             if (lat.compareTo(txt) == 0 || lon.compareTo(txt) == 0) {
                 "未定位，无法配置".showToast(this)
                 return@setOnClickListener
             }
 
-            if (binding.appKeyEditline.text.isEmpty()) {
+            if (key.isEmpty()) {
                 "和风天气App key未填写".showToast(this)
                 return@setOnClickListener
             }
@@ -298,6 +300,12 @@ class MainActivity : AppCompatActivity() {
                 "蓝牙未连接".showToast(this)
                 return@setOnClickListener
             }
+
+            val str = "{\"Header\": \"${BT.hgmHeader}\", " +
+                    "\"DataType\": \"$dt\", " +
+                    "\"Data\": {\"lat\":\"$lat\", \"lon\":\"$lon\", \"key\":\"$key\"}}"
+
+            bt.sendHgmData(str, 200);
 
             // TODO:
         }
